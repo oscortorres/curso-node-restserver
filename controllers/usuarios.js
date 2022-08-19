@@ -7,16 +7,15 @@ const usuariosGet = async (req = request, res = response) => {
   // const { q, nombre = "no name", apikey } = req.query;
   const { limite = 5, desde = 0 } = req.query;
   const query = { estado: true };
-  //  
+  //
 
   // se tenian dos peticiones asincronas a BD
   // se metieron las 2 en una promesa para ejecutarlas al mismo tiempo
   // mas rapido el proceso
   const [total, usuarios] = await Promise.all([
     Usuario.countDocuments(query),
-    Usuario.find(query)
-      .skip(Number(desde))
-      .limit(Number(limite))]);
+    Usuario.find(query).skip(Number(desde)).limit(Number(limite)),
+  ]);
 
   res.json({
     total,
@@ -62,17 +61,20 @@ const usuariosPatch = (req, res = response) => {
   });
 };
 
-const usuariosDelete = async(req, res = response) => {
-  const { id } = req.params;
+const usuariosDelete = async (req, res = response) => {
+  const { id } = req.params;  
 
   //eliminado fisicamente de la BD
   // const usuario = await Usuario.findByIdAndDelete(id);
 
-  const usuario = await Usuario.findByIdAndUpdate(id, {estado: false});
+  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+
+  // req.usuario -> viene del middleware se cargo inf del usuario
+  // const usuarioAutenticado = req.usuario;
 
   res.json({
-    id,
     usuario,
+    // usuarioAutenticado,
   });
 };
 
